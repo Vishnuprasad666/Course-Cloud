@@ -1,5 +1,5 @@
 from django.contrib import admin
-from instructor.models import User,Category,Course,Module,Lesson
+from instructor.models import User,Category,Course,Module,Lesson,InstructorProfile
 # Register your models here.
 
 admin.site.register(User)
@@ -17,13 +17,17 @@ class CourseModel(admin.ModelAdmin):
 class LessonInline(admin.TabularInline):
     model=Lesson
     extra=1
+    exclude=["order"]
+
 
 class ModuleModel(admin.ModelAdmin):
     inlines=[LessonInline]
+    exclude=["order"]
 
 
 admin.site.register(Course,CourseModel)
 admin.site.register(Module,ModuleModel)
 admin.site.register(Lesson)
+admin.site.register(InstructorProfile)
 
 

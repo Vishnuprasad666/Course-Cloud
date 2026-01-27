@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models import Max
 
 # Create your models here.
 
@@ -56,8 +57,17 @@ class Module(models.Model):
     order=models.PositiveIntegerField()
 
     def __str__(self):
-        return self.title
+        return f'{self.order}.{self.title}'
     
+    def save(self, *args, **kwargs):
+        max_order=Module.objects.filter(course_object=self.course_object).aggregate(max=Max("order")).get('max') or 0
+        self.order=max_order+1
+        super().save(*args,**kwargs)
+
+    class Meta:
+        ordering=["order"]
+
+
 class Lesson(models.Model):
     title=models.CharField(max_length=200)
     module_object=models.ForeignKey(Module,on_delete=models.CASCADE,related_name="lesson")
@@ -66,3 +76,8 @@ class Lesson(models.Model):
 
     def __str__(self):
         return f"{self.module_object.title} + {self.title}"
+    
+    def save(self,*args,**kwargs):
+        max_order=Lesson.objects.filter(module_object=self.module_object).aggregate(max=Max('order')).get('max') or 0
+        self.order=max_order+1
+        super().save(*args, **kwargs)
