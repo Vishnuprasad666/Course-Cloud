@@ -1,20 +1,57 @@
 from django.shortcuts import render,redirect
+from django.urls import reverse_lazy
 from django.views import View
 from student.forms import *
 from django.contrib import messages
+from django.views.generic import TemplateView,CreateView,FormView
+from django.contrib.auth import authenticate,login,logout
 
 # Create your views here.
 
 
-class StudentCreationView(View):
-    def get(self,request,*args,**kwargs):
-        form=StudentCreationForm()
-        return render(request,'student-registration.html',{'form':form})
-    def post(self,request,*args,**kwargs):
-        form_data=StudentCreationForm(data=request.POST)
-        if form_data.is_valid():
-            form_data.save()
-            messages.success(request,"Student Sign Up Successfull")
-            return redirect('student-signup')
-        return render(request,'student-registration.html',{'form':form_data})
+# class StudentCreationView(View):
+#     template_name="student-registration.html"
+#     form_class=StudentCreationForm
+#     success_url='signin'
+#     def get(self,request,*args,**kwargs):
+#         form=self.form_class
+#         return render(request,self.template_name,{'form':form})
+#     def post(self,request,*args,**kwargs):
+#         form_data=self.form_class(data=request.POST)
+#         if form_data.is_valid():
+#             form_data.save()
+#             messages.success(request,"Student Sign Up Successfull")
+#             return redirect(self.success_url)
+#         return render(request,self.template_name,{'form':form_data})
         
+# class StudentSignInView(View):
+#     def get(self,request):
+#         return render(request,'student_login.html')
+
+
+class StudentCreationView(CreateView):
+    template_name="student-registration.html"
+    form_class=StudentCreationForm
+    success_url=reverse_lazy("signin")
+
+class StudentSignInView(FormView):
+    template_name='student_login.html'
+    form_class=StudentSignInForm
+    def post(self,request,*args,**kwargs):
+        form_data=self.form_class(data=request.POST)
+        if form_data.is_valid():
+            username=form_data.cleaned_data.get("username")
+            password=form_data.cleaned_data.get("password")
+            user=authenticate(request,username=username,password=password)
+            if user:
+                login(request,user)
+                messages.success(request,"successfully signed in")
+                return redirect('home')
+            else:
+                messages.warning(request,"Invalid Username or Password")
+                return redirect('signin')
+        messages.error(request,"Invalid Input Recieved!!")
+        return render(request,"student_login.html",{"form":form_data})
+
+class HomeView(TemplateView):
+    template_name="home.html"
