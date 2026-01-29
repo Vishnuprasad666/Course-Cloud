@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy,reverse
 from django.views import View
 from student.forms import *
 from django.contrib import messages
@@ -45,8 +45,11 @@ class StudentSignInView(FormView):
             user=authenticate(request,username=username,password=password)
             if user:
                 login(request,user)
-                messages.success(request,"successfully signed in")
-                return redirect('home')
+                if user.role=="Student":
+                    messages.success(request,"successfully signed in")
+                    return redirect('home')
+                elif user.role=="Instructor":
+                    return redirect(reverse("admin:index"))
             else:
                 messages.warning(request,"Invalid Username or Password")
                 return redirect('signin')
@@ -54,4 +57,4 @@ class StudentSignInView(FormView):
         return render(request,"student_login.html",{"form":form_data})
 
 class HomeView(TemplateView):
-    template_name="home.html"
+    template_name="home.html"   

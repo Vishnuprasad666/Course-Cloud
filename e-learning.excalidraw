@@ -1799,11 +1799,11 @@
       "index": "an",
       "roundness": null,
       "seed": 1766697900,
-      "version": 165,
-      "versionNonce": 557989292,
+      "version": 167,
+      "versionNonce": 1682800585,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1769079226483,
+      "updated": 1769674713934,
       "link": null,
       "locked": false,
       "points": [
@@ -1875,7 +1875,7 @@
       "version": 131,
       "versionNonce": 885715474,
       "isDeleted": false,
-      "boundElements": null,
+      "boundElements": [],
       "updated": 1769596131388,
       "link": null,
       "locked": false
