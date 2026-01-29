@@ -22,5 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('instructor/',include('instructor.urls')),
     path('student/',include('student.urls')),
-    path('signin',StudentSignInView.as_view(),name='signin')
+    path('',StudentSignInView.as_view(),name='signin')
 ]

@@ -34,6 +34,10 @@ class StudentCreationView(CreateView):
     form_class=StudentCreationForm
     success_url=reverse_lazy("signin")
 
+    def form_valid(self, form):
+        messages.success(self.request,"User Signup Successfull")
+        return super().form_valid(form)
+
 class StudentSignInView(FormView):
     template_name='student_login.html'
     form_class=StudentSignInForm

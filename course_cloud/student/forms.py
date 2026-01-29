@@ -9,5 +9,5 @@ class StudentCreationForm(UserCreationForm):
 
 
 class StudentSignInForm(forms.Form):
-    username=forms.CharField(max_length=100,widget=forms.TextInput())
-    password=forms.CharField(max_length=100,widget=forms.PasswordInput())
+    username=forms.CharField(max_length=100,widget=forms.TextInput(attrs={"placeholder":"Enter Your Username","class":"border border-2 my-2 rounded"}))
+    password=forms.CharField(max_length=100,widget=forms.PasswordInput(attrs={"placeholder":"Enter Your Password","class":"border border-2 my-2 rounded"}))
