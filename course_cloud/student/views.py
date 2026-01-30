@@ -5,6 +5,7 @@ from student.forms import *
 from django.contrib import messages
 from django.views.generic import TemplateView,CreateView,FormView
 from django.contrib.auth import authenticate,login,logout
+from instructor.models import Course
 
 # Create your views here.
 
@@ -60,5 +61,7 @@ class StudentSignInView(FormView):
         messages.error(request,"Invalid Input Recieved!!")
         return render(request,"student_login.html",{"form":form_data})
 
-class HomeView(TemplateView):
-    template_name="home.html"   
+class HomeView(View):
+    def get(self,request):
+        course=Course.objects.all()
+        return render(request,'home.html',{"course":course})

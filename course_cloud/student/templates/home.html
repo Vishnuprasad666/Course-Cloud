@@ -21,7 +21,74 @@
 {% endfor %}
 {% endif %}
 
-<h1 style="text-align: center;">Home</h1>
+<div class="" style="min-height: 75vh;">
 
+    <!-- Hero Section -->
+    <section class="w-full min-h-50 bg-blue-900 p-2" id="hero">
+        <div class="w-full grid grid-cols-2">
+            <div>
+                <img src="https://static.vecteezy.com/system/resources/thumbnails/010/869/731/small/online-education-concept-illustration-digital-classroom-online-teaching-metaphors-free-png.png"
+                    alt="image" class="w-full">
+            </div>
+            <div class="flex flex-col justify-center">
+                <h1 class="text-white text-5xl text-shadow-sm text-shadow-black ps-2">Course Cloud</h1>
+                <p class="text-justify text-white p-2 mt-2">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel odio dolorem doloremque, quaerat esse
+                    quos pariatur quod molestiae repellat aliquam asperiores! Eius consequatur architecto recusandae
+                    itaque aspernatur. Saepe, facere accusamus. Lorem, ipsum dolor sit amet consectetur adipisicing
+                    elit. Quaerat eaque tempore commodi sapiente accusantium nostrum ab,
+                </p>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Courses -->
+
+
+    <!-- Main Product Showcase Section -->
+    <section class="bg-gray-50 min-h-screen py-16 px-6">
+        <!-- Hero -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900"> Explore Our Popular Courses</h1>
+            <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">Job oriented Courses</p>
+            <!-- <div class="mt-6">
+                <button class="bg-black text-white px-6 py-3 rounded-xl hover:bg-gray-800">Shop Now</button>
+            </div> -->
+        </div>
+
+        <!-- Category Filters -->
+        <!-- <div class="flex flex-wrap justify-center gap-4 mb-10">
+            <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300">All</button>
+            <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300">Headphones</button>
+            <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300">Shoes</button>
+            <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300">Watches</button>
+            <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-300">Accessories</button>
+        </div> -->
+
+        <!-- Product Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            <!-- Product Card -->
+             {% for i in course %}
+            <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition overflow-hidden group">
+                <div class="relative">
+                    <img src="{{i.picture.url}}"
+                        alt="Product Image"
+                        class="w-full h-60 object-cover group-hover:scale-105 transition-transform" />
+                    <span class="absolute top-3 right-3 bg-black text-white text-xs px-2 py-1 rounded">NEW</span>
+                </div>
+                <div class="p-5">
+                    <h3 class="text-lg font-bold text-gray-900 mb-1">{{i.title}}</h3>
+                    <p class="text-sm text-gray-500 mb-2">{{i.description}}</p>
+                    <div class="flex justify-between items-center mt-4">
+                        <span class="text-lg font-semibold text-green-600">{{i.price}}</span>
+                        <button class="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800">Learn More</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
 
 {% endblock base %}
