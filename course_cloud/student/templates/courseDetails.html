@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block base %}
+
+<h1 class="my-3 ms-3 text-3xl font-bold">{{object.title}}</h1>
+
+<div class="grid grid-cols-2 mb-2">
+    <div style="min-height: 50vh;">
+        <iframe width="100%" height="100%" src="{{object.thumbnail}}"
+            title="YouTube video player" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <div>
+            {% for i in course.module.all %}
+                <p>{{i}}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div style="min-height: 50vh;" class="mx-4">
+        <h2 class="text-2xl">{{object.title}}</h2>
+        <p class="text-right font-bold">{{object.owner}}</p>
+        {% for i in course_object.all %}
+            <span class="font-semibold my-2">{{i}} |</span>
+        {% endfor %}
+        {% if object.is_free %}
+            <h6 class="text-semibold text-green-500">Free</h6>
+        {% else %}
+            <h6 class="text-semibold text-green-500">Rs.{{object.price}}</h6>
+        {% endif %}
+        <p class="text-justify">
+            {{object.description}}
+        </p>
+        <p class="text-justify">
+            Created At: {{object.created_at}}
+        </p>
+        <p class="text-justify">
+            Updated At: {{object.updated_at}}
+        </p>
+    </div>
+</div>
+
+{% endblock base %}

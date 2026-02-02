@@ -3,7 +3,7 @@ from django.urls import reverse_lazy,reverse
 from django.views import View
 from student.forms import *
 from django.contrib import messages
-from django.views.generic import TemplateView,CreateView,FormView
+from django.views.generic import TemplateView,CreateView,FormView,ListView,DetailView
 from django.contrib.auth import authenticate,login,logout
 from instructor.models import Course
 
@@ -61,7 +61,13 @@ class StudentSignInView(FormView):
         messages.error(request,"Invalid Input Recieved!!")
         return render(request,"student_login.html",{"form":form_data})
 
-class HomeView(View):
-    def get(self,request):
-        course=Course.objects.all()
-        return render(request,'home.html',{"course":course})
+class HomeView(ListView):
+    template_name="home.html"
+    queryset=Course.objects.all()
+    context_object_name="data"
+
+class CourseDetailsView(DetailView):
+    template_name='courseDetails.html'
+    queryset=Course.objects.all()
+    # context_object_name
+    # pk_url_kwarg
