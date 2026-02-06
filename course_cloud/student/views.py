@@ -87,3 +87,19 @@ class AddtoCartView(View):
             print("already added to cart")
             messages.info(request,"Course already added to cart!")
             return redirect('course',pk=cid)
+        
+
+class CartSummeryView(View):
+    def get(self,request,*args,**kwargs):
+        qs=Cart.objects.filter(user_object=request.user)
+        cart_total=0
+        for i in qs:
+            cart_total+=i.course_object.price
+        return render(request,"cartsummery.html",{"data":qs,"cart_total":cart_total})
+    
+
+class RemoveFromCartView(View):
+    def get(self,request,**kwargs):
+        cart_id=kwargs.get('pk')
+        Cart.objects.get(id=cart_id).delete()
+        return redirect('cart-summery')

@@ -20,6 +20,9 @@ class InstructorProfile(models.Model):
     expertise=models.CharField(max_length=100, null=True)
     picture=models.ImageField(upload_to="Instructor_profile_picture", default="Instructor_profile_picture/default.png")
     about=models.CharField(max_length=500, null=True)
+    
+    def __str__(self):
+        return self.owner.username
 
 from django.db.models.signals import post_save
 
