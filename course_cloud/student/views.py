@@ -5,7 +5,8 @@ from student.forms import *
 from django.contrib import messages
 from django.views.generic import TemplateView,CreateView,FormView,ListView,DetailView
 from django.contrib.auth import authenticate,login,logout
-from instructor.models import Course
+from instructor.models import *
+from student.models import *
 
 # Create your views here.
 
@@ -71,3 +72,18 @@ class CourseDetailsView(DetailView):
     queryset=Course.objects.all()
     # context_object_name
     # pk_url_kwarg
+
+class AddtoCartView(View):
+    def get(self,request,**kwargs):
+        cid=kwargs.get('pk')
+        course=Course.objects.get(id=cid)
+        user=request.user
+        print(course)
+        print(user)
+        try:
+            Cart.objects.get_or_create(course_object=course,user_object=user)
+            return redirect('home')
+        except:
+            print("already added to cart")
+            messages.info(request,"Course already added to cart!")
+            return redirect('course',pk=cid)
