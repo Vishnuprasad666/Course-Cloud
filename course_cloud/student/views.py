@@ -66,6 +66,20 @@ class HomeView(ListView):
     template_name="home.html"
     queryset=Course.objects.all()
     context_object_name="data"
+    
+    # def get_context_data(self, **kwargs):
+    #     context=super().get_context_data(**kwargs)
+    #     qs=Order.objects.filter(student=self.request.user,is_paid=True)
+    #     context["purchased_orders"]=qs
+    #     print(context)
+    #     return context
+    
+# class HomeView(View):
+#     def get(self,request):
+#         allcourses_qs=Course.objects.all()
+#         purchases=Order.objects.filter(student=request.user, is_paid=True).values_list("course_object", flat=True)
+#         print(purchases)
+#         return render(request,"home.html",{"data":allcourses_qs,"Purchased_courses":purchases})
 
 class CourseDetailsView(DetailView):
     template_name='courseDetails.html'
@@ -103,3 +117,26 @@ class RemoveFromCartView(View):
         cart_id=kwargs.get('pk')
         Cart.objects.get(id=cart_id).delete()
         return redirect('cart-summery')
+
+class PlaceOrderView(View):
+    def get(self,request):
+        qs=Cart.objects.filter(user_object=request.user)
+        student=request.user
+        cart_total=0
+        for i in qs:
+            cart_total+=i.course_object.price
+        order=Order.objects.create(student=student,total=cart_total)
+        for i in qs:
+            order.course_object.add(i.course_object)
+        qs.delete()
+        return redirect('home')
+
+class MyCourseView(TemplateView):
+    def get(self,request):
+        qs=Order.objects.filter(student=request.user,is_paid=True)
+        return render(request,"my-courses.html",{"courses":qs})
+
+class ViewLesson(View):
+    def get(self,request,**kwargs):
+        course=Course.objects.get(id=kwargs.get('id'))
+        return render(request,"viewlesson.html",{"course":course})

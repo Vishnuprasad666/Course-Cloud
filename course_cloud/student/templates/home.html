@@ -81,7 +81,7 @@
                     {% for j in i.category_object.all %}
                     <span class="font-semibold">{{j}} |</span>
                     {% endfor %}
-                    <p class="text-sm text-gray-500 mb-2">{{i.description}}</p>
+                    <p class="text-sm text-gray-500 mb-2">{{i.description|truncatechars:100}}</p>
                     <div class="flex justify-between items-center mt-4">
                         {% if i.is_free %}
                         <span class="text-lg font-semibold text-green-600">Free</span>
