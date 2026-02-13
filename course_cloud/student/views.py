@@ -62,10 +62,10 @@ class StudentSignInView(FormView):
         messages.error(request,"Invalid Input Recieved!!")
         return render(request,"student_login.html",{"form":form_data})
 
-class HomeView(ListView):
-    template_name="home.html"
-    queryset=Course.objects.all()
-    context_object_name="data"
+# class HomeView(ListView):
+#     template_name="home.html"
+#     queryset=Course.objects.all()
+#     context_object_name="data"
     
     # def get_context_data(self, **kwargs):
     #     context=super().get_context_data(**kwargs)
@@ -74,12 +74,12 @@ class HomeView(ListView):
     #     print(context)
     #     return context
     
-# class HomeView(View):
-#     def get(self,request):
-#         allcourses_qs=Course.objects.all()
-#         purchases=Order.objects.filter(student=request.user, is_paid=True).values_list("course_object", flat=True)
-#         print(purchases)
-#         return render(request,"home.html",{"data":allcourses_qs,"Purchased_courses":purchases})
+class HomeView(View):
+    def get(self,request):
+        allcourses_qs=Course.objects.all()
+        purchases=Order.objects.filter(student=request.user, is_paid=True).values_list("course_object", flat=True)
+        print(purchases)
+        return render(request,"home.html",{"data":allcourses_qs,"Purchased_courses":purchases})
 
 class CourseDetailsView(DetailView):
     template_name='courseDetails.html'
@@ -131,12 +131,19 @@ class PlaceOrderView(View):
         qs.delete()
         return redirect('home')
 
-class MyCourseView(TemplateView):
+class MyCourseView(View):
     def get(self,request):
         qs=Order.objects.filter(student=request.user,is_paid=True)
-        return render(request,"my-courses.html",{"courses":qs})
+        return render(request,"my-courses.html",{"courses":qs })
 
-class ViewLesson(View):
+class ViewLessonView(View):
     def get(self,request,**kwargs):
-        course=Course.objects.get(id=kwargs.get('id'))
-        return render(request,"viewlesson.html",{"course":course})
+        course=Course.objects.get(id=kwargs.get('pk'))
+        query_params=request.GET # {"module":1,"lesson":2}
+        module_id=query_params.get('module') if "module" in query_params else Module.objects.filter(course_object=course).first().id
+        module_object=Module.objects.get(id=module_id, course_object=course)
+        lesson_id=query_params.get('lesson') if "lesson" in query_params else Lesson.objects.filter(module_object=module_object).first().id
+        lesson=Lesson.objects.get(id=lesson_id, module_object=module_object)
+        print(module_id,'********')
+        print(lesson_id,'********')
+        return render(request,"viewlesson.html",{"course":course ,"lesson":lesson}) 

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block base %}
+
+<h1 class="text-xl text-cyan-700 m-2 font-bold text-shadow-lg">{{course.title}}</h1>
+<div class="w-full min-h-screen grid sm:grid-cols-1 md:grid-cols-[3fr_1fr]">
+    <div>
+        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/YrrqF2y-dlM?si=-VzFfZckvUjMLcG9"
+            title="YouTube video player" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+    <div>
+        <h3>Modules</h3>
+        <div class="bg-white rounded-xl shadow mt-8">
+            <h2 class="text-xl font-semibold px-6 pt-6">Course Content</h2>
+
+            <div id="accordion-collapse" data-accordion="collapse">
+                {% for module in course.module.all %}
+                <h3>
+                    <button class="flex justify-between w-full px-6 py-4 border-b hover:bg-blue-200"
+                        data-accordion-target="#module-{{ module.id }}">
+                        <span class="font-medium">{{ module }}</span>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </h3>
+
+                <div id="module-{{ module.id }}" class="hidden">
+                    <div class="px-6 py-4 border-b space-y-2">
+                        <a href="#">
+                            {% for lesson in module.lesson.all %}
+                            <p>• {{ lesson }} <i class="fa-solid fa-play"></i></p>
+                            {% endfor %}
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock base %}

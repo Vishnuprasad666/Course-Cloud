@@ -89,8 +89,13 @@
                         <span class="text-lg font-semibold text-gray-600">Rs.{{i.price}}</span>
                         {% endif %}
                         <!-- <button class="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800"><a href="{% url 'course' i.id %}">Learn More</a></button> -->
+                        {% if i.id not in Purchased_courses %}
                         <a href="{% url 'course' i.id %}"
-                            class="bg-black text-white px-4 py-3 rounded-lg hover:bg-gray-800">Learn More</a>
+                            class="bg-black text-white px-4 py-3 rounded-lg hover:bg-gray-800">Learn More
+                        </a>
+                        {% else %}
+                        <span class="text-green-500">PURCHASED</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
