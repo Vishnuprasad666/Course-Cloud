@@ -7,6 +7,10 @@ from django.views.generic import TemplateView,CreateView,FormView,ListView,Detai
 from django.contrib.auth import authenticate,login,logout
 from instructor.models import *
 from student.models import *
+import razorpay
+
+RAZR_KEY_ID=""
+RAZR_SECRET_KEy=""
 
 # Create your views here.
 
@@ -129,7 +133,23 @@ class PlaceOrderView(View):
         for i in qs:
             order.course_object.add(i.course_object)
         qs.delete()
+        if cart_total>0:
+            #authenticate
+            client=razorpay.Client(auth=(RAZR_KEY_ID,RAZR_SECRET_KEy))
+            #payment-order creation
+            data={ "amount":int(cart_total), "currency":"INR", "recipt":"order_recipt_11" }
+            payment=client.order.create(data=data)
+            print(payment,"++++++++")
+            order.razr_pay_order_id.get('id')
+            order.save()
+            context={
+                "razr_key_id":RAZR_KEY_ID,
+                "amount":int(cart_total),
+                "razr_pay_id":payment.get('id')
+            }
+            return render(request,"payment.html",{"data":context})
         return redirect('home')
+    
 
 class MyCourseView(View):
     def get(self,request):
