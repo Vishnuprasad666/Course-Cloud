@@ -192,3 +192,8 @@ class ViewLessonView(View):
         print(module_id,'********')
         print(lesson_id,'********')
         return render(request,"viewlesson.html",{"course":course ,"lesson":lesson})
+    
+class WishListView(View):
+    def get(self,request,**kwargs):
+        qs=Wishlist.objects.filter(student=request.user)
+        return render(request,'wishlist.html',{'wishlist':qs})

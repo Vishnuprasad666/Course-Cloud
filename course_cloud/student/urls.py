@@ -11,6 +11,7 @@ urlpatterns=[
     path('removefromcart/<int:pk>',RemoveFromCartView.as_view(),name='remove-cart'),
     path('order',PlaceOrderView.as_view(),name='order'),
     path('my-courses',MyCourseView.as_view(),name='mycourses'),
-    path('lesson/<int:pk>',ViewLessonView.as_view(),name='lesson')
+    path('lesson/<int:pk>',ViewLessonView.as_view(),name='lesson'),
+    path('wishlist',WishListView.as_view(),name='wishlist')
     
 ]

@@ -8,6 +8,6 @@ def cartCount(request):
 
 def courseCount(request):
     if request.user.is_authenticated:
-        ordercount=Order.objects.filter(student=request.user,is_paid=True)
+        ordercount=Order.objects.filter(student=request.user,is_paid=True).count()
         return {"courseCount":ordercount}
     return {"courseCount":0}
