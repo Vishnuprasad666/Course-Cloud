@@ -1,2 +1,17 @@
-course_cloud/db.sqlite3
-course_cloud/.env
+# Python
+__pycache__/
+*.pyc
+
+# Virtual env
+appenv/
+
+# Django
+db.sqlite3
+# media/
+# staticfiles/
+
+# Environment
+.env
+
+# VSCode
+.vscode/
