@@ -8,9 +8,11 @@ from django.contrib.auth import authenticate,login,logout
 from instructor.models import *
 from student.models import *
 import razorpay
+from decouple import config
 
-RAZR_KEY_ID=""
-RAZR_SECRET_KEy=""
+
+RAZR_KEY_ID= config('RAZR_KEY_ID')
+RAZR_SECRET_KEY= config('RAZR_SECRET_KEY')
 
 # Create your views here.
 
@@ -135,7 +137,7 @@ class PlaceOrderView(View):
         qs.delete()
         if cart_total>0:
             #authenticate
-            client=razorpay.Client(auth=(RAZR_KEY_ID,RAZR_SECRET_KEy))
+            client=razorpay.Client(auth=(RAZR_KEY_ID,RAZR_SECRET_KEY))
             #payment-order creation
             data={ "amount":int(cart_total), "currency":"INR", "recipt":"order_recipt_11" }
             payment=client.order.create(data=data)
@@ -148,8 +150,31 @@ class PlaceOrderView(View):
                 "razr_pay_id":payment.get('id')
             }
             return render(request,"payment.html",{"data":context})
+        elif cart_total==0:
+            order.is_paid=True
+            order.save()
+            return redirect('home')
         return redirect('home')
     
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+
+@method_decorator(csrf_exempt, name='dispatch')
+class PaymentVerify(View):
+    def post(self,request):
+        print(request.POST,"==================")
+        client=razorpay.Client(auth=(RAZR_KEY_ID,RAZR_SECRET_KEY))
+        try:
+            client.utility.verify_payment_signature(request.POST)
+            razr_pay_order_id=request.POST.get('razr_pay_order_id')
+            order_instance=Order.objects.get(razr_pay_order_id=razr_pay_order_id)
+            order_instance.is_paid=True
+            order_instance.save()
+        except:
+            print("failed")
+        return redirect('home')
+        
+        
 
 class MyCourseView(View):
     def get(self,request):
@@ -166,4 +191,4 @@ class ViewLessonView(View):
         lesson=Lesson.objects.get(id=lesson_id, module_object=module_object)
         print(module_id,'********')
         print(lesson_id,'********')
-        return render(request,"viewlesson.html",{"course":course ,"lesson":lesson}) 
+        return render(request,"viewlesson.html",{"course":course ,"lesson":lesson})
