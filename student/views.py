@@ -9,7 +9,17 @@ from instructor.models import *
 from student.models import *
 import razorpay
 from decouple import config
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
+def signin_required(fn):
+    def inner(request,*args,**kwargs):
+        if request.user.is_authenticated:
+            return fn(request,*args,**kwargs)
+        else:
+            messages.warning(request,"Please Login First!")
+            return render(request,'login')
+    return inner
 
 RAZR_KEY_ID= config('RAZR_KEY_ID')
 RAZR_SECRET_KEY= config('RAZR_SECRET_KEY')
@@ -79,7 +89,8 @@ class StudentSignInView(FormView):
     #     context["purchased_orders"]=qs
     #     print(context)
     #     return context
-    
+
+@method_decorator(signin_required, name="dispatch")    
 class HomeView(View):
     def get(self,request):
         allcourses_qs=Course.objects.all()
@@ -87,12 +98,16 @@ class HomeView(View):
         print(purchases)
         return render(request,"home.html",{"data":allcourses_qs,"Purchased_courses":purchases})
 
+
+@method_decorator(signin_required, name="dispatch")    
 class CourseDetailsView(DetailView):
     template_name='courseDetails.html'
     queryset=Course.objects.all()
     # context_object_name
     # pk_url_kwarg
 
+
+@method_decorator(signin_required, name="dispatch")    
 class AddtoCartView(View):
     def get(self,request,**kwargs):
         cid=kwargs.get('pk')
@@ -109,6 +124,7 @@ class AddtoCartView(View):
             return redirect('course',pk=cid)
         
 
+@method_decorator(signin_required, name="dispatch")    
 class CartSummeryView(View):
     def get(self,request,*args,**kwargs):
         qs=Cart.objects.filter(user_object=request.user)
@@ -116,14 +132,17 @@ class CartSummeryView(View):
         for i in qs:
             cart_total+=i.course_object.price
         return render(request,"cartsummery.html",{"data":qs,"cart_total":cart_total})
-    
-
+ 
+   
+@method_decorator(signin_required, name="dispatch")
 class RemoveFromCartView(View):
     def get(self,request,**kwargs):
         cart_id=kwargs.get('pk')
         Cart.objects.get(id=cart_id).delete()
         return redirect('cart-summery')
 
+
+@method_decorator(signin_required, name="dispatch")
 class PlaceOrderView(View):
     def get(self,request):
         qs=Cart.objects.filter(user_object=request.user)
@@ -156,8 +175,6 @@ class PlaceOrderView(View):
             return redirect('home')
         return redirect('home')
     
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 
 @method_decorator(csrf_exempt, name='dispatch')
 class PaymentVerify(View):
@@ -175,12 +192,14 @@ class PaymentVerify(View):
         return redirect('home')
         
         
-
+@method_decorator(signin_required, name="dispatch")
 class MyCourseView(View):
     def get(self,request):
         qs=Order.objects.filter(student=request.user,is_paid=True)
         return render(request,"my-courses.html",{"courses":qs })
 
+
+@method_decorator(signin_required, name="dispatch")
 class ViewLessonView(View):
     def get(self,request,**kwargs):
         course=Course.objects.get(id=kwargs.get('pk'))
@@ -193,7 +212,8 @@ class ViewLessonView(View):
         print(lesson_id,'********')
         return render(request,"viewlesson.html",{"course":course ,"lesson":lesson})
     
-    
+ 
+@method_decorator(signin_required, name="dispatch")   
 class AddtoWishListView(View):
     def get(self,request,**kwargs):
         cid=kwargs.get('pk')
@@ -220,3 +240,8 @@ class RemoveWishlistView(View):
         Wishlist.objects.get(id=wishlist_id).delete()
         messages.success(request, "Removed from wishlist")
         return redirect("wishlist")
+    
+class SignOutView(View):
+    def get(self,request):
+        logout(request)
+        return redirect('signin')

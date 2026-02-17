@@ -15,6 +15,7 @@ urlpatterns=[
     path('addtowishlist/<int:pk>',AddtoWishListView.as_view(),name='addtowishlist'),
     path('wishlist/',WishListView.as_view(),name='wishlist'),
     path("wishlist/remove/<int:pk>/", RemoveWishlistView.as_view(), name="remove-wishlist"),
+    path('signout',SignOutView.as_view(),name='signout'),
 
     
 ]
