@@ -2,24 +2,44 @@
 {% block base %}
 
 {% if messages %}
-{% for i in messages %}
-{% if i.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-<p class="text-green-600">
-    {{i}}
-</p>
+<div class="fixed top-5 right-5 z-50 space-y-3">
+    {% for message in messages %}
+    <div
+        class="toast 
+        px-6 py-4 rounded-xl shadow-lg text-white flex items-center justify-between min-w-[280px]
+        {% if message.tags == 'success' %} bg-green-500
+        {% elif message.tags == 'warning' %} bg-yellow-500
+        {% elif message.tags == 'error' %} bg-red-500
+        {% else %} bg-blue-500 {% endif %}
+        "
+        x-data="{ show: true }"
+        x-show="show"
+    >
+        <span>{{ message }}</span>
+
+        <button onclick="this.parentElement.remove()" class="ml-4 text-xl font-bold">
+            ×
+        </button>
+    </div>
+    {% endfor %}
+</div>
 {% endif %}
-{% if i.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
-<p class="text-yellow-600">
-    {{i}}
-</p>
-{% endif %}
-{% if i.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-<p class="text-red-600">
-    {{i}}
-</p>
-{% endif %}
+
+<!-- {% if messages %}
+<script>
+{% for message in messages %}
+Swal.fire({
+    toast: true,
+    position: 'top-end',
+    icon: '{{ message.tags }}',
+    title: '{{ message }}',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true
+});
 {% endfor %}
-{% endif %}
+</script>
+{% endif %} -->
 
 <div class="" style="min-height: 75vh;">
 

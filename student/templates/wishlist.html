@@ -1,5 +1,88 @@
 {% extends 'base.html' %}
+
 {% block base %}
 
-<h1>Wishlist</h1>
-{% endblock base %}
+<section class="bg-gray-50 min-h-screen py-16 px-6">
+
+    <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900">
+            My Wishlist
+        </h1>
+        <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+            Courses you saved for later
+        </p>
+    </div>
+
+    {% if wishlist %}
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+
+        {% for item in wishlist %}
+        {% with course=item.course_object %}
+
+        <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition overflow-hidden group">
+
+            <div class="relative">
+                <img src="{{ course.picture.url }}"
+                    class="w-full h-60 object-cover group-hover:scale-105 transition-transform">
+
+                <span class="absolute top-3 right-3 bg-black text-white text-xs px-2 py-1 rounded">
+                    WISHLIST
+                </span>
+            </div>
+
+            <div class="p-5">
+
+                <h3 class="text-lg font-bold text-gray-900 mb-1">
+                    {{ course.title }}
+                </h3>
+
+                {% for cat in course.category_object.all %}
+                <span class="font-semibold">{{ cat }} |</span>
+                {% endfor %}
+
+                <p class="text-sm text-gray-500 mb-2">
+                    {{ course.description|truncatechars:100 }}
+                </p>
+
+                <div class="flex justify-between items-center mt-4">
+
+                    {% if course.is_free %}
+                    <span class="text-lg font-semibold text-green-600">Free</span>
+                    {% else %}
+                    <span class="text-lg font-semibold text-gray-600">
+                        Rs. {{ course.price }}
+                    </span>
+                    {% endif %}
+
+                    <a href="{% url 'course' course.id %}"
+                        class="bg-black text-white px-4 py-3 rounded-lg hover:bg-gray-800">
+                        Learn More
+                    </a>
+
+                    <a href="{% url 'remove-wishlist' item.id %}" class="bg-red-500 text-white px-4 py-3 rounded-lg text-sm hover:bg-red-400 hover:text-black">
+                        Remove
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endwith %}
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <p class="text-center text-gray-500 text-lg">
+        Your wishlist is empty
+    </p>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

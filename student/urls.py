@@ -12,6 +12,9 @@ urlpatterns=[
     path('order',PlaceOrderView.as_view(),name='order'),
     path('my-courses',MyCourseView.as_view(),name='mycourses'),
     path('lesson/<int:pk>',ViewLessonView.as_view(),name='lesson'),
-    path('wishlist',WishListView.as_view(),name='wishlist')
+    path('addtowishlist/<int:pk>',AddtoWishListView.as_view(),name='addtowishlist'),
+    path('wishlist/',WishListView.as_view(),name='wishlist'),
+    path("wishlist/remove/<int:pk>/", RemoveWishlistView.as_view(), name="remove-wishlist"),
+
     
 ]

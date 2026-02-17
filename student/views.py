@@ -193,7 +193,30 @@ class ViewLessonView(View):
         print(lesson_id,'********')
         return render(request,"viewlesson.html",{"course":course ,"lesson":lesson})
     
+    
+class AddtoWishListView(View):
+    def get(self,request,**kwargs):
+        cid=kwargs.get('pk')
+        course=Course.objects.get(id=cid)
+        user=request.user
+        try:
+            Wishlist.objects.get_or_create(course_object=course,user_object=user)
+            return redirect('home')
+        except:
+            print("already added to wishlist")
+            messages.info(request,"Course already added to wishlist!")
+            return redirect('course',pk=cid)
+
+
 class WishListView(View):
     def get(self,request,**kwargs):
-        qs=Wishlist.objects.filter(student=request.user)
+        qs=Wishlist.objects.filter(user_object=request.user)
         return render(request,'wishlist.html',{'wishlist':qs})
+    
+
+class RemoveWishlistView(View):
+    def get(self, request, **kwargs):
+        wishlist_id=kwargs.get('pk')
+        Wishlist.objects.get(id=wishlist_id).delete()
+        messages.success(request, "Removed from wishlist")
+        return redirect("wishlist")
